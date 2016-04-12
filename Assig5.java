@@ -17,6 +17,7 @@ public class Assig5{
 	public BinaryNode<Character> rootNode = new BinaryNode<Character>(new Character('\0'));
 	public ArrayList<Character> charList = new ArrayList<Character>();
 	public Character [] charArray;
+	public String str = "";
 	
 	public static void main(String [] args){
 		new Assig5(args);
@@ -52,14 +53,15 @@ public class Assig5{
 		StringBuilder temp = new StringBuilder();
 		String [] huffLetterStrings = new String[items];
 		for(int i = 0; i < items; i++){
-			huffLetterStrings[i] = getHuffCode(charArray[i], temp, rootNode, "");
+			getHuffCode(charArray[i], temp, rootNode);
+			huffLetterStrings[i] = str;
 		}
 		
 		
 		System.out.println("\nThe Huffman Tree has been restored");
 		Scanner inScan = new Scanner(System.in);
 		do{
-			System.out.println("\n\nPlease choose from the following:");
+			System.out.println("\nPlease choose from the following:");
 			System.out.println("1) Encode a text string\n2) Decode a Huffman string\n3) Quit");
 			int response = inScan.nextInt();
 			if(response == 1){
@@ -77,6 +79,9 @@ public class Assig5{
 			}
 			else if(response == 2){
 				System.out.println("Here is the encoding table:");
+				for(int i = 0; i < items; i++){
+					System.out.print(charArray[i] + ": " + huffLetterStrings[i] + "\n");
+				}
 				
 				
 				
@@ -108,23 +113,42 @@ public class Assig5{
 		return newNode;
 	}
 	
-	public String getHuffCode(Character c, StringBuilder s, BinaryNode<Character> node, String str){
-		if(c.compareTo(node.getData())!=0){
+	public void getHuffCode(Character c, StringBuilder s, BinaryNode<Character> node){
+		if(node==null){}
+		else if(c.compareTo(node.getData())!=0){
 			//check left
 			s.append('0');
-			node.getLeftChild();
+			getHuffCode(c, s, node.getLeftChild());
 			s.deleteCharAt(s.length()-1);
 			//check right
 			s.append('1');
-			node.getLeftChild();
+			getHuffCode(c, s, node.getRightChild());
 			s.deleteCharAt(s.length()-1);
 		}
-		else{
+		else if(c.compareTo(node.getData())==0){
+			System.out.println(s);
 			str = s.toString();
-			return str;
 		}
-		return str;
 	}
 	
+
+	// private T findEntry(BinaryNode<T> rootNode, T entry)
+	// {	
+      // T result = null;
+
+      // if (rootNode != null)
+      // {
+         // T rootEntry = rootNode.getData();
+
+         // if (entry.equals(rootEntry))
+            // result = rootEntry;
+         // else if (entry.compareTo(rootEntry) < 0)
+            // result = findEntry(rootNode.getLeftChild(), entry);
+         // else
+            // result = findEntry(rootNode.getRightChild(), entry);
+      // } // end if
+
+      // return result;
+	// }	
 	
 }
