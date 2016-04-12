@@ -13,7 +13,7 @@ import java.util.*;
 public class Assig5{
 	public int items = 0;
 	public Character testI = new Character('I');
-	public Character testI = new Character('\0');
+	public Character test0 = new Character('\0');
 	public BinaryNode<Character> rootNode = new BinaryNode<Character>(new Character('\0'));
 	public ArrayList<Character> charList = new ArrayList<Character>();
 	public Character [] charArray;
@@ -35,22 +35,58 @@ public class Assig5{
 			System.out.println(e);
 		}
 		
-		
+		//get sorted array of characters
 		charArray = new Character[items];
 		charList = rootNode.getNodes();
-		for(int i = 0; i < charArray.size(); i++){
-			if()
+		for(int i = 0; i < charList.size(); i++){
+			if(charList.get(i).compareTo(test0)!=0)
 				charArray[i] = charList.get(i);
+			else{
+				charList.remove(i);
+				i--;
+			}
 		}
 		Arrays.sort(charArray);
 		
-		
-		System.out.println("\nThe Huffman Tree has been restored\n\nPlease choose from the following:");
-		System.out.println("1) Encode a text string\n2) Decode a Huffman string\n3) Quit");
-		
+		//Create Huffman table
+		StringBuilder temp = new StringBuilder();
+		String [] huffLetterStrings = new String[items];
 		for(int i = 0; i < items; i++){
-			System.out.println(charArray[i]);
+			huffLetterStrings[i] = getHuffCode(charArray[i], temp, rootNode, "");
 		}
+		
+		
+		System.out.println("\nThe Huffman Tree has been restored");
+		Scanner inScan = new Scanner(System.in);
+		do{
+			System.out.println("\n\nPlease choose from the following:");
+			System.out.println("1) Encode a text string\n2) Decode a Huffman string\n3) Quit");
+			int response = inScan.nextInt();
+			if(response == 1){
+				System.out.println("Enter a String from the following characters:");
+				for(int i = 0; i < items; i++){
+					System.out.print(charArray[i]);
+				}
+				System.out.println();
+				
+				
+				
+				
+				
+				
+			}
+			else if(response == 2){
+				System.out.println("Here is the encoding table:");
+				
+				
+				
+				
+			}
+			else if(response == 3){
+				System.out.println("Good-bye");
+				break;
+			}
+		}while(true);
 	}
 	
 	public BinaryNode<Character> buildTree(Scanner fReader){
@@ -71,5 +107,24 @@ public class Assig5{
 		catch(Exception e){}
 		return newNode;
 	}
+	
+	public String getHuffCode(Character c, StringBuilder s, BinaryNode<Character> node, String str){
+		if(c.compareTo(node.getData())!=0){
+			//check left
+			s.append('0');
+			node.getLeftChild();
+			s.deleteCharAt(s.length()-1);
+			//check right
+			s.append('1');
+			node.getLeftChild();
+			s.deleteCharAt(s.length()-1);
+		}
+		else{
+			str = s.toString();
+			return str;
+		}
+		return str;
+	}
+	
 	
 }
