@@ -63,7 +63,7 @@ public class Assig5{
 		do{
 			System.out.println("\nPlease choose from the following:");
 			System.out.println("1) Encode a text string\n2) Decode a Huffman string\n3) Quit");
-			int response = inScan.nextInt();
+			int response = Integer.parseInt(inScan.nextLine());
 			if(response == 1){
 				System.out.println("Enter a String from the following characters:");
 				for(int i = 0; i < items; i++){
@@ -71,20 +71,32 @@ public class Assig5{
 				}
 				System.out.println();
 				
-				
-				
-				
-				
-				
+				//get user input
+				String input = inScan.nextLine();
+				StringBuilder code = new StringBuilder();
+				for(int i = 0; i < input.length(); i++){
+					Character c = new Character(input.charAt(i));
+					for(int j = 0; j < items; j++){
+						if(charArray[j].compareTo(c) == 0){
+							code.append(huffLetterStrings[j]);
+							code.append("\n");
+						}
+					}
+				}
+				System.out.println("Huffman String:");
+				System.out.print(code);
 			}
 			else if(response == 2){
 				System.out.println("Here is the encoding table:");
 				for(int i = 0; i < items; i++){
 					System.out.print(charArray[i] + ": " + huffLetterStrings[i] + "\n");
 				}
-				
-				
-				
+				System.out.println("\nPlease enter a Huffman string (one line, no spaces)");
+				String input = inScan.nextLine();
+				StringBuilder code = new StringBuilder();
+				useHuffCode(code, rootNode, input, 0);
+				System.out.println("Text String:");
+				System.out.println(code);
 				
 			}
 			else if(response == 3){
@@ -126,29 +138,26 @@ public class Assig5{
 			s.deleteCharAt(s.length()-1);
 		}
 		else if(c.compareTo(node.getData())==0){
-			System.out.println(s);
 			str = s.toString();
 		}
 	}
-	
 
-	// private T findEntry(BinaryNode<T> rootNode, T entry)
-	// {	
-      // T result = null;
-
-      // if (rootNode != null)
-      // {
-         // T rootEntry = rootNode.getData();
-
-         // if (entry.equals(rootEntry))
-            // result = rootEntry;
-         // else if (entry.compareTo(rootEntry) < 0)
-            // result = findEntry(rootNode.getLeftChild(), entry);
-         // else
-            // result = findEntry(rootNode.getRightChild(), entry);
-      // } // end if
-
-      // return result;
-	// }	
-	
+	public void useHuffCode(StringBuilder s, BinaryNode<Character> node, String input, int it){
+		if(it < input.length()){
+			char c = input.charAt(it);
+			if(node.hasLeftChild() == false && node.hasRightChild() == false){
+				s.append(node.getData());
+				useHuffCode(s, rootNode, input, it);
+			}
+			else if(c == '0'){
+				useHuffCode(s, node.getLeftChild(), input, it + 1);
+			}
+			else if(c == '1'){
+				useHuffCode(s, node.getRightChild(), input, it + 1);
+			}
+		}
+		else{
+			s.append(node.getData());
+		}
+	}
 }
