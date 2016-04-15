@@ -24,6 +24,7 @@ public class Assig5{
 	}
 
 	public Assig5(String [] args){
+		//Read in data
 		String fileName = args[0];
 		Scanner fReader = null;
 		File fName;
@@ -40,7 +41,7 @@ public class Assig5{
 		charArray = new Character[items];
 		charList = rootNode.getNodes();
 		for(int i = 0; i < charList.size(); i++){
-			if(charList.get(i).compareTo(test0)!=0)
+			if(charList.get(i).compareTo(test0)!=0)//Gets rid of null characters
 				charArray[i] = charList.get(i);
 			else{
 				charList.remove(i);
@@ -57,55 +58,67 @@ public class Assig5{
 			huffLetterStrings[i] = str;
 		}
 		
-		
+		//Begin user interaction
 		System.out.println("\nThe Huffman Tree has been restored");
 		Scanner inScan = new Scanner(System.in);
 		do{
-			System.out.println("\nPlease choose from the following:");
-			System.out.println("1) Encode a text string\n2) Decode a Huffman string\n3) Quit");
-			int response = Integer.parseInt(inScan.nextLine());
-			if(response == 1){
-				System.out.println("Enter a String from the following characters:");
-				for(int i = 0; i < items; i++){
-					System.out.print(charArray[i]);
-				}
-				System.out.println();
-				
-				//get user input
-				String input = inScan.nextLine();
-				StringBuilder code = new StringBuilder();
-				for(int i = 0; i < input.length(); i++){
-					Character c = new Character(input.charAt(i));
-					for(int j = 0; j < items; j++){
-						if(charArray[j].compareTo(c) == 0){
-							code.append(huffLetterStrings[j]);
+			//Try loop to error check user input
+			try{
+				System.out.println("\nPlease choose from the following:");
+				System.out.println("1) Encode a text string\n2) Decode a Huffman string\n3) Quit");
+				int response = Integer.parseInt(inScan.nextLine());
+				if(response == 1){
+					System.out.println("Enter a String from the following characters:");
+					for(int i = 0; i < items; i++){
+						System.out.print(charArray[i]);
+					}
+					System.out.println();
+					
+					//get user input
+					String input = inScan.nextLine();
+					StringBuilder code = new StringBuilder();
+					try{
+						for(int i = 0; i < input.length(); i++){
+							Character c = new Character(input.charAt(i));
+							code.append(huffLetterStrings[Character.getNumericValue(c)-10]);
 							code.append("\n");
 						}
+						System.out.println("Huffman String:");
+						System.out.print(code);
+					}
+					catch(Exception e){
+						System.out.println("There was an error in your text string");
 					}
 				}
-				System.out.println("Huffman String:");
-				System.out.print(code);
-			}
-			else if(response == 2){
-				System.out.println("Here is the encoding table:");
-				for(int i = 0; i < items; i++){
-					System.out.print(charArray[i] + ": " + huffLetterStrings[i] + "\n");
+				else if(response == 2){
+					System.out.println("Here is the encoding table:");
+					for(int i = 0; i < items; i++){
+						System.out.print(charArray[i] + ": " + huffLetterStrings[i] + "\n");
+					}
+					System.out.println("\nPlease enter a Huffman string (one line, no spaces)");
+					String input = inScan.nextLine();
+					StringBuilder code = new StringBuilder();
+					try{
+						useHuffCode(code, rootNode, input, 0);
+						System.out.println("Text String:");
+						System.out.println(code);
+					}
+					catch(Exception e){
+						System.out.println("There was an error in your Huffman string");
+					}
 				}
-				System.out.println("\nPlease enter a Huffman string (one line, no spaces)");
-				String input = inScan.nextLine();
-				StringBuilder code = new StringBuilder();
-				useHuffCode(code, rootNode, input, 0);
-				System.out.println("Text String:");
-				System.out.println(code);
-				
+				else if(response == 3){
+					System.out.println("Good-bye");
+					break;
 			}
-			else if(response == 3){
-				System.out.println("Good-bye");
-				break;
+			}
+			catch(Exception e){
+				System.out.println("");
 			}
 		}while(true);
 	}
 	
+	//Method to build tree
 	public BinaryNode<Character> buildTree(Scanner fReader){
 		BinaryNode<Character> newNode = null;
 		try{
@@ -121,10 +134,13 @@ public class Assig5{
 				return new BinaryNode<Character>(new Character(line[1].charAt(0)));
 			}
 		}
-		catch(Exception e){}
+		catch(Exception e){
+			System.out.println("Error occured while building tree");
+		}
 		return newNode;
 	}
 	
+	//Method to find the Huffman Codes
 	public void getHuffCode(Character c, StringBuilder s, BinaryNode<Character> node){
 		if(node==null){}
 		else if(c.compareTo(node.getData())!=0){
@@ -142,7 +158,8 @@ public class Assig5{
 		}
 	}
 
-	public void useHuffCode(StringBuilder s, BinaryNode<Character> node, String input, int it){
+	//Method to find letters using Huffman Code
+	public void useHuffCode(StringBuilder s, BinaryNode<Character> node, String input, int it) throws Exception{	
 		if(it < input.length()){
 			char c = input.charAt(it);
 			if(node.hasLeftChild() == false && node.hasRightChild() == false){
@@ -150,10 +167,20 @@ public class Assig5{
 				useHuffCode(s, rootNode, input, it);
 			}
 			else if(c == '0'){
-				useHuffCode(s, node.getLeftChild(), input, it + 1);
+				node = node.getLeftChild();
+				//Throw excpetion to be caught if invalid Huffman string is used
+				if(it==input.length()-1 && (node.hasLeftChild() != false || node.hasRightChild() != false)){
+					throw new Exception();
+				}
+				useHuffCode(s, node, input, it + 1);
 			}
 			else if(c == '1'){
-				useHuffCode(s, node.getRightChild(), input, it + 1);
+				node = node.getRightChild();
+				//Throw excpetion to be caught if invalid Huffman string is used
+				if(it==input.length()-1 && (node.hasLeftChild() != false || node.hasRightChild() != false)){
+					throw new Exception();
+				}
+				useHuffCode(s, node, input, it + 1);
 			}
 		}
 		else{
