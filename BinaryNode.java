@@ -158,28 +158,5 @@ public class BinaryNode<T>
       
       return newRoot;
    } // end copy
-   
-   	// *************************
-	// My added methods start here.  Note that the only differences in the three
-	// traversal methods are the order of the statements.
-	// *************************
-
-	public ArrayList<T> getNodes()
-	{
-		ArrayList<T> list = new ArrayList<T>();
-		getNodes(list, this);
-		return list;
-	}
-
-	private void getNodes(ArrayList<T> list, BinaryNode<T> node)
-	{
-		if (node != null)
-		{
-			list.add(node.getData());
-			getNodes(list, node.leftChild);
-			getNodes(list, node.rightChild);
-		}
-	}
-
 	
 } // end BinaryNode

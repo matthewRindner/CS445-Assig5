@@ -27,7 +27,7 @@ public class Assig5{
 		//Read in data
 		String fileName = args[0];
 		Scanner fReader = null;
-		File fName;
+		File fName; 
 		try{
 			fName = new File(fileName);
 			fReader = new Scanner(fName);
@@ -38,17 +38,8 @@ public class Assig5{
 		}
 		
 		//get sorted array of characters
-		charArray = new Character[items];
-		charList = rootNode.getNodes();
-		for(int i = 0; i < charList.size(); i++){
-			if(charList.get(i).compareTo(test0)!=0)//Gets rid of null characters
-				charArray[i] = charList.get(i);
-			else{
-				charList.remove(i);
-				i--;
-			}
-		}
-		Arrays.sort(charArray);
+		charArray = new Character[items];	
+		getNodes(charArray, rootNode);
 		
 		//Create Huffman table
 		StringBuilder temp = new StringBuilder();
@@ -182,9 +173,29 @@ public class Assig5{
 				}
 				useHuffCode(s, node, input, it + 1);
 			}
+			else{
+				throw new Exception();
+			}
 		}
 		else{
 			s.append(node.getData());
+		}
+	}
+	
+	public void getNodes(Character [] list, BinaryNode<Character> node)
+	{
+		getNodes2(list, node);
+	}
+
+	private void getNodes2(Character [] list, BinaryNode<Character> node)
+	{
+		if (node != null)
+		{
+			if(node.getData().compareTo(test0)!=0){
+				list[Character.getNumericValue(node.getData())-10] = node.getData();
+			}
+			getNodes2(list, node.getLeftChild());
+			getNodes2(list, node.getRightChild());
 		}
 	}
 }
